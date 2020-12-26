@@ -48,12 +48,11 @@ module.exports.sendMail = ("/send_mail", async (req, resp, next) => {
       smtpTransport.sendMail(mailOptions, function(error, response) {
         if (error) {
           const err = new Error(error)
-          err.status = 401
           next(err)
         } else {
           resp.status(200).json({
             error: 0,
-            message: 'Success'
+            message: 'mail sent'
           })
         }
       })
