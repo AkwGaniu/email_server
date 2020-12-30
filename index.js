@@ -1,13 +1,16 @@
 const express = require("express");
 const dotenv = require('dotenv')
+const upload_file= require('express-fileupload')
+const fs = require('fs')
 
 const app = express()
 
 const router = require('./routes/router')
 
 app.use(express.json())
-dotenv.config()
+app.use(upload_file())
 
+dotenv.config()
 
 app.use((req, resp, next) => {
     resp.header('Access-Control-Allow-Origin', '*')
@@ -27,7 +30,7 @@ app.use((error, req, resp, next) => {
   resp.status(error.status || 500)
   resp.json({
     status: error.status,
-    message: error.message,
+    message: error.message
     // stack: error.stack
   })
 })
