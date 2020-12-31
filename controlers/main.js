@@ -37,6 +37,8 @@ module.exports.sendMail =  async (req, resp, next) => {
     const subject = req.body.subject
     const firstName = req.body.firstName
     const lastName = req.body.lastName
+    const phoneNum = req.body.phoneNum
+    const studentEmail = req.body.studentEmail
     const appType = req.body.applicationType
     const currentDept = req.body.currentDept
     const currentUni = req.body.currentUni
@@ -52,10 +54,9 @@ module.exports.sendMail =  async (req, resp, next) => {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     let date = `${today.getDate()} ${months[today.getMonth()]}, ${today.getFullYear()}`
     
-    if (reciever && subject && firstName && lastName &&
-      appType && currentDept && currentUni && matricNum && 
-      aspiringUni && aspiringDept && entryMode && entryYear && 
-      currentSession && transferReason) {
+    if (reciever && subject && firstName && lastName && phoneNum && studentEmail &&
+      appType && currentDept && currentUni && matricNum && aspiringUni && aspiringDept &&
+      entryMode && entryYear && currentSession && transferReason) {
       if (req.files && req.files.passport) {
         const passportFile = req.files.passport
         const file_name = passportFile.name
@@ -73,6 +74,8 @@ module.exports.sendMail =  async (req, resp, next) => {
               const htmlToSend = template({
                 firstName: firstName,
                 lastName: lastName,
+                phoneNum: phoneNum,
+                studentEmail: studentEmail,
                 appType: appType,
                 currentUni: currentUni,
                 currentDept: currentDept,
