@@ -7,7 +7,6 @@ const path = require("path");
 
 
 const emailTemplateSource = fs.readFileSync(path.join(__dirname, "../template/email_template.hbs"), "utf8")
-console.log(process.env.HOST)
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.CLOUD_API_KEY, 
@@ -96,7 +95,7 @@ module.exports.sendMail =  async (req, resp, next) => {
               }
               smtpTransport.sendMail(mailOptions, function(error, response) {
                 if (error) {
-                  console.log(error)
+                  // console.log(error)
                   const err = new Error(error)
                   return next(err)
                 } else {
@@ -124,7 +123,7 @@ module.exports.sendMail =  async (req, resp, next) => {
       return next(err)
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     const err = new Error(error)
     next(err)
   }
