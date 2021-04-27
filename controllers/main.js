@@ -5,34 +5,31 @@ const nodemailer = require("nodemailer");
 const handlebars = require("handlebars")
 const path = require("path");
 
-
 const emailTemplateSource = fs.readFileSync(path.join(__dirname, "../template/email_template.hbs"), "utf8")
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.CLOUD_API_KEY, 
   api_secret: process.env.CLOUD_SECRET_KEY 
 });
-
 const smtpTransport = nodemailer.createTransport({
   service: process.env.HOST,
   auth: {
     user: process.env.USER,
     pass: process.env.PASS
   }
-});
-
+})
 const template = handlebars.compile(emailTemplateSource)
 
 module.exports.home = (req, resp, next) => {
   resp.status(200).json({
     error: 0,
-    message: "Success"
+    message: req.device.type.toUpperCase()
   })
 }
 
 module.exports.sendMail =  async (req, resp, next) => {
   try {
-    const reciever = req.body.to
+    const receiver = req.body.to
     const subject = req.body.subject
     const firstName = req.body.firstName
     const lastName = req.body.lastName
@@ -53,7 +50,7 @@ module.exports.sendMail =  async (req, resp, next) => {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     let date = `${today.getDate()} ${months[today.getMonth()]}, ${today.getFullYear()}`
     
-    if (reciever && subject && firstName && lastName && phoneNum && studentEmail &&
+    if (receiver && subject && firstName && lastName && phoneNum && studentEmail &&
       appType && currentDept && currentUni && matricNum && aspiringUni && aspiringDept &&
       entryMode && entryYear && currentSession && transferReason) {
       if (req.files && req.files.passport) {
@@ -89,7 +86,7 @@ module.exports.sendMail =  async (req, resp, next) => {
               })
               const mailOptions = {
                 from: process.env.USER,
-                to: reciever,
+                to: receiver,
                 subject: subject,
                 html: htmlToSend
               }

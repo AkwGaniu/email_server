@@ -1,8 +1,7 @@
 const express = require("express");
 const dotenv = require('dotenv')
-const upload_file= require('express-fileupload')
-const fs = require('fs')
-
+const upload_file = require('express-fileupload')
+const mongoose = require('mongoose')
 const app = express()
 dotenv.config()
 
@@ -11,15 +10,26 @@ const router = require('./routes/router')
 app.use(express.json())
 app.use(upload_file())
 
+
+//DATABASE CONNECTION
+mongoose.connect(process.env.DB_CONNECT, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}, (err) => {
+  if(err) return console.log(`Error: ${err}`)
+  console.log("We are connected")
+})
+
 app.use((req, resp, next) => {
-    resp.header('Access-Control-Allow-Origin', '*')
-    resp.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE')
-    resp.header('Access-Control-Allow-headers', 'Content-type, Accept, x-access-token, x-key')
-    if (req.method === 'OPTIONS') {
-        resp.status(200).end()
-    } else {
-        next()
-    }
+  resp.header('Access-Control-Allow-Origin', '*')
+  resp.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE')
+  resp.header('Access-Control-Allow-headers', 'Content-type, Accept, x-access-token, x-key')
+  if (req.method === 'OPTIONS') {
+      resp.status(200).end()
+  } else {
+      next()
+  }
 })
 
 app.use('/', router)
