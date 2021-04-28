@@ -23,13 +23,13 @@ smtpTransport.verify(function(error, success) {
 });
 
 const sendApplicationMail = (data) => {
-  const emailTemplateSource = fs.readFileSync(path.join(__dirname, "../template/mail/passwordReset.hbs"), "utf8")
+  const emailTemplateSource = fs.readFileSync(path.join(__dirname, "../template/email_template.hbs"), "utf8")
   const template = handlebars.compile(emailTemplateSource)
   const htmlToSend = template(data)
   mailOptions = {
     from: process.env.USER,
-    to: receiver,
-    subject: subject,
+    to: data.receivers,
+    subject: data.subject,
     html: htmlToSend
   }
   smtpTransport.sendMail(mailOptions, function(error, response) {

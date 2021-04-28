@@ -1,6 +1,6 @@
 const express = require("express");
 const dotenv = require('dotenv')
-const upload_file = require('express-fileupload')
+// const upload_file = require('express-fileupload')
 const mongoose = require('mongoose')
 const app = express()
 dotenv.config()
@@ -8,7 +8,7 @@ dotenv.config()
 const router = require('./routes/router')
 
 app.use(express.json())
-app.use(upload_file())
+// app.use(upload_file())
 
 
 //DATABASE CONNECTION
@@ -39,8 +39,8 @@ app.use((error, req, resp, next) => {
   resp.status(error.status || 500)
   resp.json({
     status: error.status,
-    message: error.message
-    // stack: error.stack
+    message: error.message,
+    stack: error.stack
   })
 })
 

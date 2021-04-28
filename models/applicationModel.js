@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const { Student } = require('../models/studentModel')
-const application = new mongoose.Model({
+
+const application = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: Student
@@ -30,6 +31,10 @@ const application = new mongoose.Model({
     type: String,
     required: true
   },
+  dateApplied: {
+    type: Date,
+    default: Date.now()
+  }
 })
 
 module.exports.Application = mongoose.model('Application', application)

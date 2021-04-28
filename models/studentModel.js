@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const department = require('./departmentModel')
 
-const Student = new mongoose.Schema({
+const student = new mongoose.Schema({
   matricNumber: {
-    type: Number,
+    type: String,
     max: 9,
     required: true,
     unique: true
@@ -57,4 +57,4 @@ const Student = new mongoose.Schema({
   }
 })
 
-module.exports.Students = mongoose.model('Students', Student)
+module.exports.Student = mongoose.model('Students', student)

@@ -1,6 +1,8 @@
 const userFunction = require('../CustomCodes/userFunctions')
 const facultyModel = require('../models/facultyModel')
-const departmentModel = require('../models/departmentModel')
+const helperFunctions = require('../CustomCodes/helper')
+const { Department } = require('../models/departmentModel')
+const { Faculty } = require('../models/facultyModel')
 
 module.exports.addStudent = async (req, resp, next) => {
   try {
@@ -26,7 +28,6 @@ module.exports.addStudent = async (req, resp, next) => {
         cgpa: cgpa,
         level: level,
         department: department,
-        userType: userType,
         entryMode: entryMode,
         entryYear: entryYear,
         passport: passport
@@ -57,11 +58,12 @@ module.exports.addDepartment = async (req, resp, next) => {
     const deptName = req.body.deptName
     const faculty = req.body.faculty
     if (deptName && faculty) {
-      const department = await departmentModel.Department.findOne({ deptName: deptName })
+      const department = await Department.findOne({ deptName: deptName })
       if (!department) {
-        const newDepartment = new departmentModel.Department({
-          deptName: deptName,
-          faculty: faculty
+        const existingFaculty = await Faculty.findOne({ name: faculty.toLowerCase() })
+        const newDepartment = new Department({
+          deptName: deptName.toLowerCase(),
+          faculty: existingFaculty._id
         })
         await newDepartment.save()
         const responseData = { Error: 0, Message: 'Department added successfully', data: newDepartment }
@@ -87,10 +89,10 @@ module.exports.addFaculty = async (req, resp, next) => {
   try {
     const name = req.body.name
     if (name) {
-      const faculty = await facultyModel.Faculty.findOne({ name: name })
+      const faculty = await facultyModel.Faculty.findOne({ name: name.toLowerCase() })
       if (!faculty) {
         const newFaculty = new facultyModel.Faculty({
-          name: name,
+          name: name.toLowerCase(),
         })
         await newFaculty.save()
         const responseData = { Error: 0, Message: 'faculty added successfully', data: newFaculty }
@@ -116,12 +118,36 @@ module.exports.addFaculty = async (req, resp, next) => {
 module.exports.fetchStudent = async (req, resp, next) => {
   try {
     const matricNumber = req.body.matricNumber
-    const userDetails = await helperFunctions.fetchUserDetails(userId)
-    if(userDetails) {
-      const responseData = { Error: 0, Message: 'success', data: userDetails}
+    if (matricNumber) {
+      const userDetails = await helperFunctions.fetchUserDetails(matricNumber)
+      if(userDetails) {
+        const responseData = { Error: 0, Message: 'success', data: userDetails}
+        return resp.status(200).json(responseData)
+      } else {
+        const error = new Error('OoPs, something ocurred')
+        error.status = 200
+        next(error)
+      }
+    } else {
+      const error = new Error('No matric number supplied')
+      error.status = 200
+      next(error)
+    }
+  } catch (error) {
+    console.log({ Environment_error: error.toString() })
+    next(error.toString())
+  }
+}
+
+
+module.exports.fetchFaculties = async (req, resp, next) => {
+  try {
+    const faculties = await helperFunctions.fetchFaculties()
+    if(faculties) {
+      const responseData = { Error: 0, Message: 'success', data: faculties}
       return resp.status(200).json(responseData)
     } else {
-      const error = new Error(data)
+      const error = new Error('OoPs, something ocurred')
       error.status = 200
       next(error)
     }
