@@ -1,29 +1,19 @@
-const fs = require('fs')
-const cloudinary = require('cloudinary')
-"use strict";
-const nodemailer = require("nodemailer");
-const handlebars = require("handlebars")
-const path = require("path");
+const emailService = require("../CustomCodes/emailServices");
 
-const emailTemplateSource = fs.readFileSync(path.join(__dirname, "../template/email_template.hbs"), "utf8")
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME, 
-  api_key: process.env.CLOUD_API_KEY, 
-  api_secret: process.env.CLOUD_SECRET_KEY 
-});
-const smtpTransport = nodemailer.createTransport({
-  service: process.env.HOST,
-  auth: {
-    user: process.env.USER,
-    pass: process.env.PASS
-  }
-})
-const template = handlebars.compile(emailTemplateSource)
+
+// const smtpTransport = nodemailer.createTransport({
+//   service: process.env.HOST,
+//   auth: {
+//     user: process.env.USER,
+//     pass: process.env.PASS
+//   }
+// })
 
 module.exports.home = (req, resp, next) => {
+  console.log(req.device)
   resp.status(200).json({
     error: 0,
-    message: req.device.type.toUpperCase()
+    message: 'Successful, Welcome.'
   })
 }
 
@@ -53,67 +43,25 @@ module.exports.sendMail =  async (req, resp, next) => {
     if (receiver && subject && firstName && lastName && phoneNum && studentEmail &&
       appType && currentDept && currentUni && matricNum && aspiringUni && aspiringDept &&
       entryMode && entryYear && currentSession && transferReason) {
-      if (req.files && req.files.passport) {
-        const passportFile = req.files.passport
-        const file_name = passportFile.name
-        const file_path = './uploads/' + file_name
-        const allowed_files = [".jpeg", ".JPEG", ".jpg", ".JPG", ".PNG", ".png", ".svg"]
-        const start = file_name.indexOf(".")
-        const file_type = file_name.slice(start, file_name.length)
-        if (allowed_files.includes(file_type)) {
-          passportFile.mv(file_path, async (err) => {
-            if (err) next(err)
-            cloudinary.v2.uploader.upload(file_path, (error, result) => {
-              fs.unlinkSync(file_path)
-              if (error) return next(error)
-
-              const htmlToSend = template({
-                firstName: firstName,
-                lastName: lastName,
-                phoneNum: phoneNum,
-                studentEmail: studentEmail,
-                appType: appType,
-                currentUni: currentUni,
-                currentDept: currentDept,
-                matricNum: matricNum,
-                aspiringUni: aspiringUni,
-                aspiringDept: aspiringDept,
-                entryMode: entryMode,
-                entryYear: entryYear,
-                currentSession: currentSession,
-                transferReason: transferReason,
-                passport: result.url
-              })
-              const mailOptions = {
-                from: process.env.USER,
-                to: receiver,
-                subject: subject,
-                html: htmlToSend
-              }
-              smtpTransport.sendMail(mailOptions, function(error, response) {
-                if (error) {
-                  // console.log(error)
-                  const err = new Error(error)
-                  return next(err)
-                } else {
-                  resp.status(200).json({
-                    error: 0,
-                    message: 'mail sent'
-                  })
-                }
-              })
-            })
-          })
-        } else {
-          const err = new Error('Image format not supported')
-          err.status = 401
-          return next(err)
+        const appData = {
+          firstName: firstName,
+          lastName: lastName,
+          phoneNum: phoneNum,
+          studentEmail: studentEmail,
+          appType: appType,
+          currentUni: currentUni,
+          currentDept: currentDept,
+          matricNum: matricNum,
+          aspiringUni: aspiringUni,
+          aspiringDept: aspiringDept,
+          entryMode: entryMode,
+          entryYear: entryYear,
+          currentSession: currentSession,
+          transferReason: transferReason,
+          passport: result.url
         }
-      } else {
-        const err = new Error('No passport attached')
-        err.status = 400
-        return next(err)
-      }
+        emailService.sendApplicationMail(appData)
+        resp.json('Application sent successfully')
     } else {
       const err = new Error('Invalid parameter')
       err.status = 400

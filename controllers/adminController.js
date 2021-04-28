@@ -12,8 +12,11 @@ module.exports.addStudent = async (req, resp, next) => {
     const matricNumber = req.body.matricNumber
     const cgpa = req.body.cgpa
     const level =  req.body.level
+    const entryMode = req.body.entryMode
+    const entryYear = req.body.entryYear
   
-    if (firstName && lastName && department && matricNumber && cgpa && level) {
+    if (firstName && lastName && department && matricNumber && cgpa && level && entryMode && entryYear) {
+      const passport = `http://studentservices.lasu.edu.ng/returningstudents/images/stud_image/${matricNumber}.jpg`
       const userData = {
         matricNumber: matricNumber,
         firstName: firstName,
@@ -23,7 +26,10 @@ module.exports.addStudent = async (req, resp, next) => {
         cgpa: cgpa,
         level: level,
         department: department,
-        userType: userType
+        userType: userType,
+        entryMode: entryMode,
+        entryYear: entryYear,
+        passport: passport
       }
       const { response, data } = await userFunction.registrationProcess(userData)
       if (response) {

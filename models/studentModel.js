@@ -39,6 +39,18 @@ const Student = new mongoose.Schema({
     ref: department.Department,
     required: true
   },
+  entryMode: {
+    type: String,
+    required: true
+  },
+  entryYear: {
+    type: String,
+    required: true
+  },
+  passport: {
+    type: String,
+    required: true
+  },
   dateCreated: {
     type: Date,
     default: Date.now()
