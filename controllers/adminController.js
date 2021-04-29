@@ -1,5 +1,4 @@
 const userFunction = require('../CustomCodes/userFunctions')
-const facultyModel = require('../models/facultyModel')
 const helperFunctions = require('../CustomCodes/helper')
 const { Department } = require('../models/departmentModel')
 const { Faculty } = require('../models/facultyModel')
@@ -89,9 +88,9 @@ module.exports.addFaculty = async (req, resp, next) => {
   try {
     const name = req.body.name
     if (name) {
-      const faculty = await facultyModel.Faculty.findOne({ name: name.toLowerCase() })
+      const faculty = await Faculty.findOne({ name: name.toLowerCase() })
       if (!faculty) {
-        const newFaculty = new facultyModel.Faculty({
+        const newFaculty = new Faculty({
           name: name.toLowerCase(),
         })
         await newFaculty.save()
