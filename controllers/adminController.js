@@ -57,7 +57,7 @@ module.exports.addDepartment = async (req, resp, next) => {
     const deptName = req.body.deptName
     const faculty = req.body.faculty
     if (deptName && faculty) {
-      const department = await Department.findOne({ deptName: deptName })
+      const department = await Department.findOne({ deptName: deptName.toLowerCase() })
       if (!department) {
         const existingFaculty = await Faculty.findOne({ name: faculty.toLowerCase() })
         const newDepartment = new Department({
