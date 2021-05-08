@@ -38,7 +38,7 @@ app.use('/', router)
 app.use((error, req, resp, next) => {
   resp.status(error.status || 500)
   resp.json({
-    status: error.status,
+    Error: error.status,
     message: error.message,
     // stack: error.stack
   })

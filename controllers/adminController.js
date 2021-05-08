@@ -119,7 +119,8 @@ module.exports.fetchStudent = async (req, resp, next) => {
     const matricNumber = req.params.matricNumber
     if (matricNumber) {
       const userDetails = await helperFunctions.fetchUserDetails(matricNumber)
-      if(typeof(userDetails) != String) {
+      console.log(typeof(userDetails))
+      if(typeof(userDetails) != 'string') {
         const responseData = { Error: 0, Message: 'success', data: userDetails}
         return resp.status(200).json(responseData)
       } else {
