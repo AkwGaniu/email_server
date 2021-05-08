@@ -15,6 +15,7 @@ const validEmail = (email) => {
 const fetchUserDetails = async (matricNumber) => {
   try {
     const studentData = await Student.findOne({ matricNumber: matricNumber }).populate('department')
+    if (studentData === null) return 'No student with that matric number'
     const faculty = await  Faculty.findOne({ _id: studentData.department.faculty })
     const returnData = {
       firstName: studentData.firstName,
@@ -30,7 +31,6 @@ const fetchUserDetails = async (matricNumber) => {
       faculty: faculty.name,
       passport: studentData.passport
     }
-    // console.log(returnData)
     return returnData
   } catch (error) {
     console.log({ Environment_error: error.toString() })
@@ -56,7 +56,7 @@ const fetchFaculties = async (matricNumber) => {
       }
       newFaculties.push(newFaculty)
     }
-    return newFaculties
+    return newFaculties   
   } catch (error) {
     console.log({ Environment_error: error.toString() })
   }

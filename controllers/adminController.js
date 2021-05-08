@@ -116,14 +116,14 @@ module.exports.addFaculty = async (req, resp, next) => {
 
 module.exports.fetchStudent = async (req, resp, next) => {
   try {
-    const matricNumber = req.body.matricNumber
+    const matricNumber = req.params.matricNumber
     if (matricNumber) {
       const userDetails = await helperFunctions.fetchUserDetails(matricNumber)
-      if(userDetails) {
+      if(typeof(userDetails) != String) {
         const responseData = { Error: 0, Message: 'success', data: userDetails}
         return resp.status(200).json(responseData)
       } else {
-        const error = new Error('OoPs, something ocurred')
+        const error = new Error(userDetails)
         error.status = 200
         next(error)
       }
