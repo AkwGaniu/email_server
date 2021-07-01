@@ -5,24 +5,20 @@ const handlebars = require("handlebars")
 const path = require("path");
 
 
-// const smtpTransport = nodemailer.createTransport({
-//   service: process.env.HOST,
-//   auth: {
-//     user: process.env.USER,
-//     pass: process.env.PASS
-//   }
-// })
 const smtpTransport = nodemailer.createTransport({
-  service: process.env.HOST,
-  port: 465,
+  host: process.env.HOST,
+  port: 465,  
   secure: true,
   auth: {
-    user: process.env.USER,
+    user: process.env.USER_EMAIL,
     pass: process.env.PASS
   }
 })
+
 // verify connection configuration
 smtpTransport.verify(function(error, success) {
+  console.log(process.env.USER_EMAIL, process.env.PASS)
+
   if (error) { 
     console.log(error);
   } else {
