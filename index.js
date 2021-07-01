@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors')
 const dotenv = require('dotenv')
 // const upload_file = require('express-fileupload')
 const mongoose = require('mongoose')
@@ -21,16 +22,18 @@ mongoose.connect(process.env.DB_CONNECT, {
   console.log("We are connected")
 })
 
-app.use((req, resp, next) => {
-  resp.header('Access-Control-Allow-Origin', '*')
-  resp.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE')
-  resp.header('Access-Control-Allow-headers', 'Content-type, Accept, x-access-token, x-key')
-  if (req.method === 'OPTIONS') {
-      resp.status(200).end()
-  } else {
-      next()
-  }
-})
+// app.use((req, resp, next) => {
+//   resp.header('Access-Control-Allow-Origin', '*')
+//   resp.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE')
+//   resp.header('Access-Control-Allow-headers', 'Content-type, Accept, x-access-token, x-key')
+//   if (req.method === 'OPTIONS') {
+//       resp.status(200).end()
+//   } else {
+//       next()
+//   }
+// })
+
+app.use(cors())
 
 app.use('/', router)
 
