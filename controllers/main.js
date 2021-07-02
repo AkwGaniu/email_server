@@ -51,7 +51,8 @@ module.exports.sendMail =  async (req, resp, next) => {
         currentSession: currentSession,
         transferReason: transferReason,
         passport: passport,
-        receivers: receivers
+        receivers: receivers,
+        subject: 'University Transfer Application'
       }
       emailService.sendApplicationMail(applicationData)
       const studentRef = Student.findOne({ matricNumber: matricNumber })
