@@ -4,8 +4,9 @@ const dotenv = require('dotenv')
 // const upload_file = require('express-fileupload')
 const mongoose = require('mongoose')
 const app = express()
-dotenv.config()
 
+dotenv.config()
+app.use(cors())
 const router = require('./routes/router')
 
 app.use(express.json())
@@ -32,8 +33,6 @@ mongoose.connect(process.env.DB_CONNECT, {
 //       next()
 //   }
 // })
-
-app.use(cors())
 
 app.use('/', router)
 
