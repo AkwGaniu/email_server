@@ -32,8 +32,7 @@ module.exports.sendMail =  async (req, resp, next) => {
     if (authorizedEmail && subject && firstName && lastName && phoneNum && studentEmail &&
       appType && currentDept && currentUni && matricNumber && aspiringUni && aspiringDept &&
       entryMode && entryYear && currentSession && transferReason) {
-        const receivers = [ authorizedEmail, studentEmail ]
-
+      const receivers = [ authorizedEmail, studentEmail ]
       const passport = `http://studentservices.lasu.edu.ng/returningstudents/images/stud_image/${matricNumber}.jpg`
       const applicationData = {
         firstName: firstName,
@@ -69,7 +68,7 @@ module.exports.sendMail =  async (req, resp, next) => {
       resp.json('Application sent successfully')
     } else {
       const err = new Error('Invalid parameter')
-      err.status = 400
+      err.status = 200
       return next(err)
     }
   } catch (error) {
